@@ -3,7 +3,7 @@
     * <code>go help gopath</code>
     * 外部のパッケージをインストールしたりビルドするのにかならず必要
     * GOPATHに指定した各ディレクトリは所定の構造になっていないといけない。srcディレクトリ、pkgディレクトリ、binディレクトリ。
-    *<code>
+    * <code>
     GOPATH=/home/user/gocode
 
     /home/user/gocode/

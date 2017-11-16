@@ -3,10 +3,10 @@
     * <code>go help gopath</code>
     * 外部のパッケージをインストールしたりビルドするのにかならず必要
     * GOPATHに指定した各ディレクトリは所定の構造になっていないといけない。srcディレクトリ、pkgディレクトリ、binディレクトリ。
-    * <code>
-    GOPATH=/home/user/gocode
+    
+    <code>
+    GOPATH=/home/user/gocode/home/user/gocode/
 
-    /home/user/gocode/
         src/
             foo/
                 bar/               (go code in package bar)
@@ -19,7 +19,8 @@
             linux_amd64/
                 foo/
                     bar.a          (installed package object)
-</code>
+    </code>
+
     * そもそもver1.8から勝手にGOPATHが設定されるようになったので考える必要なし←
     * <code>go env</code>でいろいろ確認できる
     * winだとC直下にGOROOTに指定されたフォルダができており、GOPATHはuser直下になっていた（見えてない？）

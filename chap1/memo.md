@@ -3,7 +3,7 @@
     * <code>go help gopath</code>
     * 外部のパッケージをインストールしたりビルドするのにかならず必要
     * GOPATHに指定した各ディレクトリは所定の構造になっていないといけない。srcディレクトリ、pkgディレクトリ、binディレクトリ。
-    
+
     <code>
     GOPATH=/home/user/gocode/home/user/gocode/
 
@@ -32,3 +32,4 @@
         * <b>All tools successfully installed. You're ready to Go :).</b>
         * → ダメ
         * ターミナルから<code>go run</code>するか、デバッグならイケたのでRunnerを使うのは諦めよう。。使い方いまいちわからんし
+    * OSXで最初いれたとき1.7とかでGOPATHも指定されていなかったが、<code>brew upgrade go</code>で難なく最新に、GOPATHも自動的に指定されていた

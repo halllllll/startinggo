@@ -1,0 +1,24 @@
+package main
+import (
+	"fmt"
+)
+
+func main(){
+	/* ???????????????????????????????
+	var cities []string{
+		"tokyo",
+		"paris",
+		"Roma",
+		"Sri Jayawardenepura Kotte",
+	}
+	*/
+
+	// syntax error
+	cities:=[]string{
+		"tokyo",
+		"paris",
+		"Roma",
+		"Sri Jayawardenepura Kotte"		
+	}
+	fmt.Println(cities)
+}

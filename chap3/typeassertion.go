@@ -1,6 +1,7 @@
 package main
 import (
 	"fmt"
+	"reflect"
 )
 
 func anything(a interface{}){
@@ -29,12 +30,27 @@ func main(){
 	var xx interface{}="おちんちん"
 	switch v:=xx.(type){
 		case bool:
-			fmt.Printf("%#dはbool型", v)
+			fmt.Printf("%#dはbool型\n", v)
 		case int:
-			fmt.Printf("%#dはint型", v)
+			fmt.Printf("%#dはint型\n", v)
 		case string:
-			fmt.Printf("%#dはstring型", v)
+			fmt.Printf("%#dはstring型\n", v)
 		default:
-			fmt.Println("なんだお前")
+			fmt.Println("なんだお前\n")
+	}
+	// case節で複数の定数を指定した場合の挙動
+	/*
+	var y interface{} = [...]int{10, 3, 5}
+	fmt.Println(reflect.TypeOf(y))
+	switch y.(type){
+		case int, uint, string, [3]int:
+			fmt.Prinltln(y[0])
+	}
+	*/
+	// 同上
+	var z interface{} = "おっぱい"
+	switch z.(type){
+			case int, uint, string:
+				fmt.Println(z+z)
 	}
 }

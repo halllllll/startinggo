@@ -177,6 +177,7 @@ func main(){
 * whileはないけど条件付きforで同じことをできる
 * よくあるforの初期化文、条件文、後処理文はいずれも省略可能だし全部なくてもいい（無限ループになる）
 * <code>range</code>と一緒に使うのがわりと有用そうだし頻度高そう
+    * <code>for idx, v:=range 配列とかマップとか文字列みたいなデータ構造:</code>みたいな感じ
     * 順番はpythonのenumerateと同じでインデックス、要素みたいな感じ
 * 配列とスライスとマップとかのコレクションだけでなく文字列やチャネルにも使える
     * マップもpythonと同じでkey, valueみたいな感じ
@@ -217,6 +218,7 @@ func main(){
 ```
 #### 型によるswitch
 * 型アサーションと分岐を組み合わせたお手軽なswtich記述法。組み合わせたといいつつ<code>.(type)</code>は<strong>switch文でしか使えないっぽい。</strong>
+    * <code>use of .(type) outside type switch</code>なるエラーなんて珍しいな
 ```
 switch interface型の変数.(type){
     case bool:
@@ -230,6 +232,52 @@ switch interface型の変数.(type){
 }
 ```
 また、値をとりたいときは<code>v:=interface型の変数.(type)</code>とすればよい
+* ただし、caseのあとの条件列挙で複数の型を指定するとそのうち１つでもあっていればcase節が実行されるので、interface型として認識される（単一の型であれば自動的にその型が割り振られる）<br>
+```
+var z interface{} = "おっぱい"
+switch z.(type){
+    case int, uint, string:
+        fmt.Println(z+z)
+}
+```
+これは<code>invalid operation: z + z (operator + not defined on interface)</code>というエラーになる
+
+#### ラベル付き文のとこで気になったやつ
+* gotoはクソ
+* goto代わりに使える
+* <code>break ラベル名</code>あるいは<code>continue ラベル名</code>みたいな感じでラベルの貼られたところまで抜ける
+* <code>break</code>は一階層だけジャンプするがラベル付きbreak文はラベルまで一気に抜けられるのでネストの深いところで条件に一致したとき処理を終了させてループを抜ける、みたいな感じで使える
+```
+// 深いネストから一気にぬけられる
+A:=[5]int{2, 5, 8, 11, 13}
+B:=[8]int{1, 3, 5, 10, 14, 15, 16, 17}
+C:=[4]int{5, 6, 8, 21}
+var ans int
+MYLABEL:
+    for _, a:=range A{
+        for _, b:=range B{
+            for _, c:=range C{
+                if (a+b+c)%7==0{
+                fmt.Printf("最初に7で割り切れる組み合わせは%d+%d+%d\n", a, b, c)
+                ans = a+b+c
+                break MYLABEL
+                }
+            }
+        }
+    }
+fmt.Println(ans)
+```
+という感じ
+* <code>continue ラベル名</code>はそこまでで処理を中断し、ラベルで示されているループの次の繰り返し処理の先頭へジャンプする
+    * うまいサンプルがわからんのでサンプルなし・・・
+
+
+#### deferのとこで気になったやつ
+* 関数の最後に実行される<strong>関数</strong>を登録
+    * 関数というか関数呼び出しの形態のやつに限る。<code>fmt.Println()</code>とか
+* リソースの開放処理なんかで力を発揮するらしい
+
+* deferにはいくつでも登録できるが最終的に呼び出されるときはスタック形式で最後に登録されたものから呼び出される
 
 ### まとめ
 * ここでやっと書籍内の書式について出て来るの新しい。こっからが本番だという気持ち
@@ -242,3 +290,4 @@ switch interface型の変数.(type){
 * iota、定数との絡みでしか言及されず、ろくな説明もなかったのだが読み方すらわからんのだが一体なんなの
 * スコープ、識別子の名前の1文字目で判断できるのヤバイ
 * ifやswitchでの簡易文は積極的に使うことが望まれるらしい。変数の局所製を高めるというらしいがよくわからん
+* 型アサーションは重要そうな概念。型がなにかを知りたいときにforでいちいち回したりするのではなくswith文と組み合わせた型アサーションで書くとシンプルに書ける、以外のメリットはなんだろうか

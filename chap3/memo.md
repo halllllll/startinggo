@@ -70,15 +70,15 @@
 
 #### 配列型のとこで気になったやつ
 * 要素数の省略。<code>arr:=[...]int {1, 2, 4, 8}</code>
-* 要素数が異なれば別の型になる<br>
-<code>
-	ar1 := [3]string{"カバさん", "アリクイさん", "あんこう"}<br>
-	ar2 := [5]string{"うさぎさん", "カメさん", "レオポンさん", "カモさん", "アヒルさん"}<br>
-	ar1type, ar2type := reflect.TypeOf(ar1), reflect.TypeOf(ar2)<br>
-	if ar1type != ar2type{<br>
-		fmt.Println(ar1type, ar2type)<br>
-	}<br>
-</code>
+* 要素数が異なれば別の型になる
+```
+	ar1 := [3]string{"カバさん", "アリクイさん", "あんこう"}
+	ar2 := [5]string{"うさぎさん", "カメさん", "レオポンさん", "カモさん", "アヒルさん"}
+	ar1type, ar2type := reflect.TypeOf(ar1), reflect.TypeOf(ar2)
+	if ar1type != ar2type{
+		fmt.Println(ar1type, ar2type)
+	}
+```
 
 * 値型（!!!!!!!!!!!!!）
 
@@ -102,29 +102,30 @@
 * lambda式的な、あるいはジェネレータ的な
 * 実際はクロージャらしい
 * 関数を値のように扱うことで、引数に関数をとる関数や関数を返す関数とか作れる
-* 関数を返す関数<br>
-<code>
-//string型の引数を受け取って戻り値のない関数を返す関数<br>
-func retfunc(a string) func(){<br>
-    return func(){<br>
-       fmt.Println(a)<br>
-    }<br>
-}<br>
-//string型の引数を受け取って「string型を返す関数」を返す関数<br>
-func retfunc2(a string) func()string{<br>
-	return func()string{<br>
-		return a+"!!!!!!!!!!!"<br>
-	}<br>
+* 関数を返す関数
+```
+//string型の引数を受け取って戻り値のない関数を返す関数
+func retfunc(a string) func(){
+    return func(){
+       fmt.Println(a)
+    }
 }
-</code>
-* 関数を引数にとる関数<br>
-<code>//戻り値のない関数を引数にとる戻り値のない関数<br>
-func callfunc(f func()){<br>
-	f()<br>
-}<br>
-func main(){<br>
-	callfunc(func(){fmt.Println("わかりづらい")})<br>
-}</code>
+//string型の引数を受け取って「string型を返す関数」を返す関数
+func retfunc2(a string) func()string{
+	return func()string{
+		return a+"!!!!!!!!!!!"
+	}
+}
+```
+* 関数を引数にとる関数
+```//戻り値のない関数を引数にとる戻り値のない関数<br>
+func callfunc(f func()){
+	f()
+}
+func main(){
+	callfunc(func(){fmt.Println("わかりづらい")})
+}
+```
 
 * クロージャとして使える。内部関数（Goではそのような言い方をされるのかは知らんが）から外部関数のローカル変数を参照することで、本来実行語に消去されるローカル変数を保ちつづける
 
@@ -182,8 +183,53 @@ func main(){<br>
     * 文字列はインデックスと<code>rune</code>型になる
     * Unicodeのコードポイントごとにインデックスが振られるので注意（よくわからん）
 #### switchのとこで気になったやつ
-
-    
+* 式によるswitch
+    * if同様簡易文を使える
+    * 条件も使える。<code>case n>0 && n%2==0</code>みたいな
+        * <b>この場合はswtichの条件は無しにするのが当然</b>。各caseでboolを返すのでswtich（のあとに続く条件節）で管理しなくてもいい。無しだと自動的にtrueと見なされる    * caseで与える条件はコンマ区切りで複数与えることができる
+    * フォールスルーしない。ひとつでもcase節が実行されると終了する。フォールスルーさせる場合は明示的に<code>fallthrough</code>キーワードを使う
+    * 条件が式と定数の混在だとエラーになる
+        ```
+        switch x:=1; x{
+            case 1, 2, 3:
+                fmt.Println("xは1,2,3のどれか")
+            case x%2==0:
+                //そもそもフォールスルーが働かないのでスルーされる
+                fmt.Println("xは偶数")
+            default:
+                fmt.Println("あばばばばばばばばば")
+        }
+        ```
+        このコードは<code>invalid case x % 2 == 0 in switch on x (mismatched types bool and int)</code>ということでエラーになる
+#### 型アサーション
+* 型によるswitch（後述）を実現するための機能
+* 動的に変数の型をチェックする
+* <code>interface{}</code>はすべての型をとることができるが、型をとったときに自分自身の型がなんなのかを知ることができる
+* <code>interfaceの変数名.(型名)</code>という形でチェック
+```
+	// 型アサーション
+	var x interface{} = 10
+	i:=x
+	fmt.Println(i.(int))	// > 10
+	// ２つの変数に入れると二つ目の戻り値でエラーを吐かずにboolで返る
+	j, isString := x.(string)
+	fmt.Println(j, isString)//> (空文字) false
+```
+#### 型によるswitch
+* 型アサーションと分岐を組み合わせたお手軽なswtich記述法。組み合わせたといいつつ<code>.(type)</code>は<strong>switch文でしか使えないっぽい。</strong>
+```
+switch interface型の変数.(type){
+    case bool:
+        fmt.Println("bool型")
+    case int, uint:
+        fmt.Println("int型")
+    case string:
+        fmt.Println("文字列型")
+    default:
+        fmt.Println("なんだお前")
+}
+```
+また、値をとりたいときは<code>v:=interface型の変数.(type)</code>とすればよい
 
 ### まとめ
 * ここでやっと書籍内の書式について出て来るの新しい。こっからが本番だという気持ち
@@ -195,3 +241,4 @@ func main(){<br>
 * 相変わらずクロージャとかよくわからん
 * iota、定数との絡みでしか言及されず、ろくな説明もなかったのだが読み方すらわからんのだが一体なんなの
 * スコープ、識別子の名前の1文字目で判断できるのヤバイ
+* ifやswitchでの簡易文は積極的に使うことが望まれるらしい。変数の局所製を高めるというらしいがよくわからん

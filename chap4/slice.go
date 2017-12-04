@@ -71,6 +71,16 @@ func main(){
 	//スライスを可変長引数として使う
 	integers:=[]int{4, 2, 3, 6, 0, 10, -20}
 	fmt.Println(sum(integers...))
+
+	//配列は値、スライスは参照型
+	tekitouarray := [3]int{1, 2, 3}
+	fmt.Println(tekitouarray)
+	beki(tekitouarray)
+	fmt.Println(tekitouarray)
+	tekitousslice := tekitouarray[:]
+	fmt.Println(tekitousslice)
+	beki2(tekitousslice)
+	fmt.Println(tekitousslice)
 }
 
 //可変長引数をとる関数
@@ -80,4 +90,18 @@ func sum(slices ...int)int{
 		ans+=v
 	}
 	return ans
+}
+
+//各要素を冪乗する
+func beki(n [3]int){
+	for i, v := range n{
+		n[i] = v*v
+	}
+	return
+}
+func beki2(n []int){
+	for i,v := range n{
+		n[i] = v*v
+	}
+	return
 }

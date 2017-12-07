@@ -22,4 +22,5 @@ func main() {
 	pair := i_slice{-1, 3, 2, 5}
 	col := rgba{0.334, 0.233, 0.734}
 	fmt.Println(pair, col)
+
 }

@@ -29,3 +29,10 @@
     }
     ```
     として<code>go build -o (バイナリで保存ｓたい名前) （このソースファイルの名前）</code>でbuildし、<code>（バイナリで保存した名前） 引数1 引数2 引数3...</code>とコマンドライン引数を与えてやると想像したとおりの出力が得られる
+* <code>os.Open()</code>はファイルをreadonlyモードで開く
+    * つかうときは最後にストリームを切るために<code>defer filename.Close()</code>しとくと良いらしい
+* <code>os.File</code>は ~~なんかファイルとかディレクトリの操作とかにばんばん使う感じのやつらしい~~ Openしたりしたときに返る構造体でとりあえず思いつく感じのファイル操作ができる。CreateとかRenameとかRemoveAllとかそういう感じ
+    * os.File型のファイルへのIOは<code>[]byte</code>型をつかう
+    * なのでファイルを扱うときはとりあえずまずそれ作って、あとは元のファイルのどこからbyteを読み込むかとかそういう感じ
+    * <code>os.Fle.Stat()</code>で返る<code>os.FileInfo</code>型でファイル名やファイルサイズやファイルのモードやファイルの最終更新時間やディレクトリかどうかなんてのがわかる
+    * [写経した](https://github.com/halllllll/startinggo/blob/master/chap7/file2.go)ものの、ReadAtとか動かし方が違うのか思った動作してないしゴミ

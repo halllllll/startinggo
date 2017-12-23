@@ -8,3 +8,24 @@
     * > log.Fatalをとくに設定することなく使用 すると、引数として与えたinterface{}型の値 を標準出力へ出力したあとでos.Exit(1 が実行されます。
 
         とあったが、それを実現するコードのサンプルがなく、適当にlgo.Fatal()をつかわないだけだとなんのエラーもなくふつうに実行されてしまい確認できなかった
+* <code>os.Args</code>はosパッケージのパッケージ変数
+    * string型のスライス
+    * コマンドライン引数が格納される
+    ```
+    package main
+    import (
+        "fmt"
+        "os"
+    )
+
+    func main(){
+        // os.Argsの要素数を表示
+        // os.Argsは実行時に入力されたコマンドライン引数が入ってるらしい
+        fmt.Printf("length: %d\n", len(os.Args))
+        // 中身をぜんぶ出力
+        for _, v:=range os.Args{
+            fmt.Println(v)
+        }
+    }
+    ```
+    として<code>go build -o (バイナリで保存ｓたい名前) （このソースファイルの名前）</code>でbuildし、<code>（バイナリで保存した名前） 引数1 引数2 引数3...</code>とコマンドライン引数を与えてやると想像したとおりの出力が得られる

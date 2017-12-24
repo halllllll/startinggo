@@ -111,3 +111,13 @@
 * 実行中のプロセスを取得する<code>os.Getpid()</code>
     * win機にはそもそも<b>ユーザーIDやグループIDは取得できない</b>らしい。取得できない場合は常に-1が返るらしい
 ### time
+* 日付とか時刻ですね
+* time.Now
+    * お察しのとおり現在時刻が取得できる。<code>time.Time</code>型の構造体。
+    * <code>time.Time</code>構造体はtimeパッケージにおける中心的なデータ構造
+* time.Data
+    * 指定した日時を表す<code>time.Time</code>型を任意に生成できる
+    * 年を表す<code>time.Time.Year()</code>はじめ、<code>YearDay</code>,<code>Month</code>,<code>Weekday</code>,<code>Day</code>,<code>Hour</code>,<code>Minutee</code>,<code>Second</code>,<code>Nanosecond</code>,<code>Zone</code>みたいなのが取れる
+    * 詳しくは教科書にあるんだけど、わざわざ書くまでも無いので都度ググれ
+    * ちなみによくある言語仕様と異なり、<strong>
+    月（Month）は1から始まるらしい</strong>。へー

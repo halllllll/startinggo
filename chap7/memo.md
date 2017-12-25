@@ -1,5 +1,6 @@
 ## Goのパッケージ
 * 使用頻度の高そうな標準パッケージをみていくよ
+* クソ多いのでざっといくよ（気づいたのだいぶあとなので急に内容が加速します）
 ### OS
 * <b>goが動作する各OSに依存したAPIを扱う。</b>プラットフォームに独立したAPIを提供するやつ
 * <code>os.Exit(ステータスコードを示すint型)</code>は<code>defer</code>すら置き去りにしてその場でプログラムを終了する
@@ -121,3 +122,105 @@
     * 詳しくは教科書にあるんだけど、わざわざ書くまでも無いので都度ググれ
     * ちなみによくある言語仕様と異なり、<strong>
     月（Month）は1から始まるらしい</strong>。へー
+* time.Month型、time.Weekday型の<code>String</code>メソッドは月名や曜日名を文字列で取得できる
+* <code>time.Duration</code>型で<b>時間の間隔を表現</b>できる
+    * <code>time.Hour</code>とか<code>time.Nanosecond</code>とかで取れる。最小値が初期値。時間だったら<code>"1h0m0s"</code>とかでナノ秒だったら<code>"1ns"</code>とか
+    * <code>time.Time</code>型と組み合わせることができる。time.Time型は<code>time.Now()</code>とか<code>time.Date(時間指定)</code>とかの返り値
+    ```
+	// time.Time型と組み合わせる。Addを使ってみる
+	t:= time.Now()
+	fmt.Println(t)
+	// いまから2時間15分22秒後
+	t = t.Add(2*time.Hour+15*time.Minute+22*time.Second)
+	fmt.Println(t)
+	// 差分をとるときはSub
+	tokyo2020:=time.Date(2020, 7, 24, 0, 0, 0, 0, time.Local)
+	dif := tokyo2020.Sub(t)
+	fmt.Println(dif)
+    ```
+    * あと、時間の前後関係をboolで返す<code>Before</code>と<code>After</code>とか同じかどうかを返す<code>Equal</code>とかある
+* <code>AddDate</code>で年月日を増減
+    ```
+	// 数値指定で増減
+	// 1年後
+	t1:=t.AddDate(1, 0, 0)
+	fmt.Println(t1)
+	// 20年と4ヶ月と40日前
+	t2:=t.AddDate(-20, -4, -40)
+	fmt.Println(t2)
+    ```
+* <code>time.Parse(フォーマット, 指定の日時)</code>でフォーマットに沿った日時を生成する
+    * 教科書なにいってんのかわからんので無視
+* <code>time.Format(フォーマット)</code>で任意のフォーマットにできる
+    * 無視
+* 以下だいたい意味不明なので無視
+
+### math
+
+* だいたいよくあるような定数とかMaxInt的なやつは当然揃っている
+* 平方根はよくあるけど<strong>立方根</strong>もある。<code>math.Cbrt()</code>
+* <code>math.Trunc()</code>で小数点以下を切捨て。負値もふつうに切り捨てるので0のほうに丸まる
+* Ceil, Floorもふつうにある。負値の取扱に注意
+* やたらと三角関数が充実している
+* 対数もLogだけじゃなくて<code>Log10</code>, <code>Log1p</code>, <code>Log2</code>とかある
+* <strong>非数</strong>なんて久しぶりに聞いたが非数かどうか判定する<code>IsNaN</code>がある
+* 非数とか無限大も生成できる。<code>math.NaN</code>, <code>math.inf(0)</code>
+
+### math/rand
+* みんな大好き疑似乱数
+    ```
+	rand.Seed(time.Now().UnixNano())
+	fmt.Println(rand.Float64())
+    ```
+    よくあることだがシード値が固定だと実行のたび毎回同じ乱数になる
+* デフォルトでは範囲は0から1
+* 範囲は最大値だけ指定できるので負値がほしけりゃあとで減算するなりする
+    ```
+	fmt.Println(rand.Intn(100))
+    ```
+* デフォルトの疑似乱数発生器はGoのランタイム上のやつを共有しているのでどっかでシード値を書き換えるとすべての場所で使ってる擬似乱数もその影響を受ける・このため独自に擬似乱数発生機を生成できる仕組みがある
+    * <code>rand.NewSource(ソースとなる値)</code>でソースを生成
+    * <code>rand.New(ソース)</code>で新たに擬似乱数発生器を生成
+
+### flag
+* シンプルなコマンドラインを作れる(?)
+    * ~~コマンドラインツールじゃなくてコマンド自体を作る？？~~ まあなんかやっぱParseArgと同じと思っていいっぽい
+* ArgParse的なもんかと思ったが、<code>os.Args</code>を使って作るとコマンドの順番とかそういうのを考慮するのが非常にめんどくさいらしいのでこれがあるらしい？？
+* 一応つくったけどメモするまでもねぇっつぅかまた知りたくなったら必要なときに戻って来ればいいかな
+
+### fmt
+* ふつうの標準出力の<code>fmt.Print()</code>系と文字列としてフォーマットして生成する<code>fmt.Sprintf()</code>系とほかのio.wirter（ファイルとか）に出力する<code>fmt.Fprintf()</code>系がある（誤解を生む表現）
+* 書式指定子がふつうに豊富にあるけどまとめて書くのめんどくさすぎる。とりあえずいつも通り0埋めとと左詰めと2, 8, 16進数で表現するやつと小数点以下どこまでって指定するやつくらいはかければいいや
+* 書式指定子<code>%v</code>
+    * いろんな型を柔軟に出力できる。基本型はもちろん<code>interface{}</code>のような型が不定であるやつでもマップでも配列でもスライスでも構造体でも。
+    * 構造体に<code>%+v</code>を使うとフィールドについても出力し、<code>&#v</code>だとフィールドに加えて型についても出力する、とか
+### log
+* 簡単なログを標準エラー出力に出力する。標準出力と標準エラー出力の違いは知らん
+* ログの出力先を変更できる。標準入力とか別のファイルとか。（VSC上で試したけどどっちもわからん、後者に至ってはファイル生成されないし）
+* <code>log.SetFlags(フォーマット)</code>でログをフォーマットできる。フォーマットは論理和？パイプ演算子でつなげて複数指定できる
+    ```
+	log.SetFlags(log.Ldate|log.Ltime|log.Lmicroseconds|log.Llongfile)
+	log.Println("おぱい")
+    ```
+    とかにすると、日付、時間、マイクロ秒、ファイルの絶対パスも合わせて出力される
+* <code>log.SetPrefix(プレフィックス)</code>でプレフィックスを設定できる
+* ロガーを生成できるらしい。例によって何書いてあんのかさっぱりわからんので無視
+### strconv
+* 基本型とstringの相互変換みたいなやつらしい。bool値や整数値、floatなんかをstringに変換できる
+    * intを変換するときに基数を指定できる。つまりn進数で表現できる
+    * floatはなんかオプションがいろいろあって指数表現だったり実数表現だったり小数点以下n桁までの指定できたり精度をビット数で指定したりするもうわけわからんね
+* 文字列からbool, int, floatそれぞれに変換するときも可能であったり不可能であったりするような書き方がある
+    * TRUEや1やtでもtrueとして扱われる、とか
+    * この場合もintに変換するときに基数を設定できる
+    * ただし<strong>負値は使えない</strong>
+
+### unicode
+* > unicodeはrune型が表現するUnicodeコードポイント処理のためのユーティリティーがまとめられたパッケージです。
+* 意味不明
+    * 特に<strong>Unicodeコードポイント処理</strong>
+* 文字か数値か、といった判定が可能
+    * <code>IsDigit()</code>とか<code>IsLetter()</code>とか
+### strings
+* 文字列操作。検索や置換や結合やetc
+* <code>strings.Join()</code>は<code>[]string</code>型に含まれる文字列を結合する。第二引数につなげる文字を指定できる（指定しないとダメなのでいらんときは空文字で）
+

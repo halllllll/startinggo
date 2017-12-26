@@ -223,4 +223,12 @@
 ### strings
 * 文字列操作。検索や置換や結合やetc
 * <code>strings.Join()</code>は<code>[]string</code>型に含まれる文字列を結合する。第二引数につなげる文字を指定できる（指定しないとダメなのでいらんときは空文字で）
-
+* <code>Index</code>とか<code>Join</code>とか<code>Contains</code>とか<code>Repeat</code>とか<code>ToLower</code>とか<code>ToUpper</code>は当たり前として、なんか珍しいのがある
+    * <code>IndexAny(検索対象となる文字列, 含まれるか調べる文字列)</code>は第二の文字のうち第一引数に最初に含まれるもののインデックスを返す
+    * <code>HasPrefix(ry, ry)</code>は第一引数が第二引数から始まる文字列かどうかをboolで返す
+    * <code>HasSuffix</code>は逆
+    * <code>Contains(ry, ry)</code>は部分文字列が含まれるかどうかをboolで返すが、<code>ContainsAny(ry, ry)</code>は部分文字列じゃなくていずれかの文字が含まれるかどうかを返す。こんなん第二引数スライスか配列でいいような気がするが
+    * <code>Count(ry,ry)</code>はよくある数えるやつだけどなぜか<strong>空文字で検索するとすべての文字が対象になる</strong>ので注意(len(s1)になる)
+    * <code>Replace(対象となる文字列, 含まれるかどうか検索する文字列, 置換する文字列, 置換最大数)</code>でそのまんまの感じ。長い。
+    * <code>TrimeSpace(対象となる文字列)</code>は空文字やスペースやタブや改行なんかを削除する
+    * <code>Fileds(対象となる文字列)</code>はスペースほか改行とかタブで区切られた文字列を分割して[]string型にする

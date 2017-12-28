@@ -282,4 +282,37 @@
 * <code>json.Marshal</code>で<code>フィールド名:値</code>って形にしてくれる
     * <code>json.Unmarshal</code>でその逆もできる
 * いつか出てきた（忘れた）構造体のタグ機能で<code>タグ:値</code>って形にもできる
-* 
+* ほかにももっとあるやろとおもったらそれしか書かれてなくて草
+
+### net/url
+* URL文字列をパースする
+* pythonで見たぞ requestsだっけ？
+* <code>url.Parse(URL文字列)</code>の戻り値である<code>url.URL</code>型のフィールドからurlの各要素を取れる
+    * <code>Scheme</code>とか<code>RawQuery</code>とか<code>Fragment</code>とか色々
+* <code>url.URL</code>から逆にurlを生成したりもできる。各クエリも<code>Encode()</code>でうまい具合にしてくれるっぽい
+    ```
+	// これポインタでやらないと結果が違ってくるからな
+	u:=&url.URL{}
+	u.Scheme = "https"
+	u.Host = "soundcloud.com"
+	u.Path = "djjasrac"
+	// Query()の戻り値はurl.Values型で、これはmap[string][string]のエイリアスであるらしい
+	q := u.Query()
+	// なんかmapがSet()もつとか調べてもどこにも出てこなかったんだけどまあもういいや、Setできるってことだろ
+	q.Set("key1", "yo")
+	q.Set("key2", "muri")
+	// url.Encode()でいい具合に=と&でつなげてくれるってことだろ
+	fmt.Println(q.Encode())
+	u.RawQuery = q.Encode()
+	fmt.Println(u)
+	fmt.Println(q)
+	fmt.Println(reflect.TypeOf(q))
+    ```
+    出力
+    ```
+    key1=yo&key2=muri
+    https://soundcloud.com/djjasrac?key1=yo&key2=muri
+    map[key1:[yo] key2:[muri]]
+    url.Values
+    ```
+    

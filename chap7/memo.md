@@ -247,4 +247,22 @@
 * 基本的なIO処理に<b>バッファ処理を付加した機能</b>がまとめられたパッケージ    
     * ？？？？？
 * 多機能
-* 
+* 手順として、
+* <code>bufio.NewScanner(io.Readerを実装した何か)</code>で適当に<code>os.Stdin</code>なり<code>strings.NewReader</code>なりの入力ソースを与えてやり、スキャナを生成
+* スキャナの<code>Scan()</code>関数はスキャンが成功する限りtrueを返す
+* スキャナの<code>Text()</code>関数はスキャンした内容を文字列にする
+* という感じ
+* スキャナを生成した際デフォルトでは<b>行区切り</b>でスキャンすることになっているが、スキャナの<code>Split(区切り方)</code>関数でどういう挙動にするか変更できる
+    * 区切り方は<code>SplitFunc</code>型とかいうやつらしいが、よくわからんので以下のやつを使うといい
+    * <code>bufio.ScanLines</code>は改行区切り
+    * <code>bufio.ScanWords</code>は空文字やスペースや行区切り
+    * あと<code>bufio.ScanRunes</code>と<code>bufio.ScanBytes</code>もあるらしいが知らん
+* バッファ使うと早くなる。出力でバッファ使うときは最後に<code>Flush</code>しないと出力されない
+
+### io/ioutil
+* 入出力をサポートする機能をまとめたもの
+* いままでのIOとどう違うっていうんだ。。。
+* たとえば入力全体を読み込める
+    * <code>ioutil.ReadAll(io.Reader型)</code>
+    * 戻り値は[]byteで、あんまり巨大なファイルとかには向いてない
+    
